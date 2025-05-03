@@ -4,7 +4,6 @@ import '../widgets/search_bar.dart';
 import '../widgets/activity_indicator.dart';
 import '../models/destination.dart';
 import '../theme/colors.dart';
-import 'search_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -57,29 +56,38 @@ class _HomeScreenState extends State<HomeScreen> {
       averageRating: 4.9,
       reviewCount: 567,
     ),
+    Destination(
+      id: '4',
+      name: 'Piramides de Cholula',
+      description: 'La piramide con la base mas ancha del mundo',
+      location: 'Puebla, México',
+      latitude: 19.0579573,
+      longitude: -98.3022263468972,
+      imageUrls: [
+        'https://www.turismopuebla.es/wp-content/uploads/2015/02/piramide-cholula.jpg',
+      ],
+      tags: ['Aventura', 'Gastronomía'],
+      averageRating: 4.2,
+      reviewCount: 150,
+    ),
   ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('ViajeTotal'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.notifications_outlined),
-            onPressed: () {
-              // Navegar a notificaciones
-            },
-          ),
-        ],
-      ),
+      appBar: AppBar(title: const Text('ViajeTotal')),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Barra de búsqueda
-            const CustomSearchBar(hintText: 'Buscar destinos, viajes...'),
+            CustomSearchBar(
+              hintText: 'Buscar destinos, viajes...',
+              onTap: () {
+                Navigator.pushNamed(context, '/search');
+              },
+            ),
             const SizedBox(height: 24),
 
             // Sección de viajes activos
@@ -93,9 +101,9 @@ class _HomeScreenState extends State<HomeScreen> {
                 // Navegar a lista completa de destinos
               },
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: 14),
             _buildPopularDestinations(),
-            const SizedBox(height: 24),
+            const SizedBox(height: 25),
 
             // Categorías
             _buildSectionHeader(
@@ -182,6 +190,7 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         if (onSeeAll != null)
           TextButton(onPressed: onSeeAll, child: const Text('Ver todos')),
+        //AGREGAR EL BOTÓN DE VIAJES
       ],
     );
   }
@@ -398,15 +407,18 @@ class _HomeScreenState extends State<HomeScreen> {
         BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Perfil'),
       ],
       onTap: (index) {
-        if (index == 1) {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => SearchScreen(), // ← debe ser un Widget
-            ),
-          );
+        switch (index) {
+          case 0:
+            Navigator.pushNamed(context, '/');
+            break;
+          case 1:
+            Navigator.pushNamed(context, '/search');
+            break;
+          case 2:
+            //Realizar redirección a la nueva pantalla de viajes guardados
+            Navigator.pushNamed(context, '/plan-trip');
+            break;
         }
-        // Puedes agregar navegación a las demás pantallas si las tienes
       },
     );
   }

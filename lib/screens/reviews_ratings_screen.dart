@@ -177,7 +177,9 @@ class _ReviewsRatingsScreenState extends State<ReviewsRatingsScreen> {
           children: [
             CircleAvatar(
               radius: 20,
-              backgroundImage: NetworkImage('https://example.com/user.jpg'),
+              backgroundImage: NetworkImage(
+                'https://cdn.computerhoy.com/sites/navi.axelspringer.es/public/media/image/2022/11/verticalimage1669078554123-2877435.jpg?tf=1200x1200',
+              ),
             ),
             SizedBox(width: 12),
             Column(
@@ -277,7 +279,9 @@ class ReviewsPreviewSection extends StatelessWidget {
             children: [
               CircleAvatar(
                 radius: 16,
-                backgroundImage: NetworkImage('https://example.com/user.jpg'),
+                backgroundImage: NetworkImage(
+                  'https://cdn.computerhoy.com/sites/navi.axelspringer.es/public/media/image/2022/11/verticalimage1669078554123-2877435.jpg?tf=1200x1200',
+                ),
               ),
               SizedBox(width: 8),
               Text(
