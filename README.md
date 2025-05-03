@@ -7,9 +7,11 @@ Viaje total para ayudarte en la totalidad de tu viaje!!
    git clone https://github.com/AlanTrujilloRoldan/viajetotal.git
 
 2. **Instalar dependencias**:
+    ```sh
     flutter pub get
 
 3. **Ejecutar la aplicación**:
+    ```sh
     flutter run
 
 # 📌 Estructura del Proyecto
