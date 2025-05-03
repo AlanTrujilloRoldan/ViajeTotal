@@ -135,7 +135,7 @@ class CalculationHelper {
 
 class ImageHelper {
   static String getPlaceholderImageUrl(String category) {
-    const baseUrl = 'https://viajetotal.com/placeholders';
+    const baseUrl = 'https://tuviajetotal.com/placeholders';
     switch (category.toLowerCase()) {
       case 'aventura':
         return '$baseUrl/adventure.jpg';

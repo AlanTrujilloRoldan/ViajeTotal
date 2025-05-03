@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+
 class SearchScreen extends StatefulWidget {
+  const SearchScreen({super.key});
+
   @override
   _SearchScreenState createState() => _SearchScreenState();
 }
@@ -46,9 +49,11 @@ class _SearchScreenState extends State<SearchScreen> {
             SizedBox(height: 10),
             ElevatedButton(
               onPressed: _selectDates,
-              child: Text(dates == null
-                  ? "Seleccionar fechas"
-                  : "${dates!.start.toLocal()} - ${dates!.end.toLocal()}"),
+              child: Text(
+                dates == null
+                    ? "Seleccionar fechas"
+                    : "${dates!.start.toLocal()} - ${dates!.end.toLocal()}",
+              ),
             ),
             SizedBox(height: 10),
             Row(
@@ -70,12 +75,9 @@ class _SearchScreenState extends State<SearchScreen> {
               ],
             ),
             SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: _search,
-              child: Text("Buscar"),
-            ),
+            ElevatedButton(onPressed: _search, child: Text("Buscar")),
             SizedBox(height: 20),
-            ...results.map((r) => ListTile(title: Text(r))).toList(),
+            ...results.map((r) => ListTile(title: Text(r))),
           ],
         ),
       ),
