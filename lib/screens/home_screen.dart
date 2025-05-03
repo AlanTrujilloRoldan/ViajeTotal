@@ -4,8 +4,7 @@ import '../widgets/search_bar.dart';
 import '../widgets/activity_indicator.dart';
 import '../models/destination.dart';
 import '../theme/colors.dart';
-import '../screens/SearchScreen.dart';  // Importación corregida
-
+import 'search_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -24,7 +23,7 @@ class _HomeScreenState extends State<HomeScreen> {
       latitude: 20.629559,
       longitude: -87.073885,
       imageUrls: [
-        'https://cdn.pixabay.com/photo/2017/06/11/18/17/beach-2393678_1280.jpg',
+        'https://cdn.sanity.io/images/atvntylo/production/4512065539db3fcdbc34cf03f59e90ff386d1c76-1080x720.webp?w=3840&q=65&fit=clip&auto=format',
       ],
       tags: ['Playa', 'Relax', 'Familiar'],
       averageRating: 4.7,
@@ -38,7 +37,7 @@ class _HomeScreenState extends State<HomeScreen> {
       latitude: 20.684285,
       longitude: -88.567782,
       imageUrls: [
-        'https://cdn.pixabay.com/photo/2017/06/12/17/46/chichen-itza-2396829_1280.jpg',
+        'https://escapadas.mexicodesconocido.com.mx/wp-content/uploads/2024/02/chichen-itza-pixabay.jpg',
       ],
       tags: ['Cultural', 'Histórico'],
       averageRating: 4.8,
@@ -52,7 +51,7 @@ class _HomeScreenState extends State<HomeScreen> {
       latitude: 27.516667,
       longitude: -107.766667,
       imageUrls: [
-        'https://cdn.pixabay.com/photo/2020/03/08/21/55/mexico-4913221_1280.jpg',
+        'https://static.wixstatic.com/media/cf3297_1207992ee7504d6b89bef1ad615630e4~mv2.jpg/v1/fill/w_568,h_378,al_c,q_80,usm_0.66_1.00_0.01,enc_avif,quality_auto/cf3297_1207992ee7504d6b89bef1ad615630e4~mv2.jpg',
       ],
       tags: ['Aventura', 'Naturaleza'],
       averageRating: 4.9,
@@ -399,19 +398,16 @@ class _HomeScreenState extends State<HomeScreen> {
         BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Perfil'),
       ],
       onTap: (index) {
-  if (index == 1) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => SearchScreen(), // ← debe ser un Widget
-      ),
-    );
-  
-
-  }
-  // Puedes agregar navegación a las demás pantallas si las tienes
-},
-
+        if (index == 1) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => SearchScreen(), // ← debe ser un Widget
+            ),
+          );
+        }
+        // Puedes agregar navegación a las demás pantallas si las tienes
+      },
     );
   }
 }
