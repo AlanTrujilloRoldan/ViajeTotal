@@ -4,6 +4,8 @@ import '../widgets/search_bar.dart';
 import '../widgets/activity_indicator.dart';
 import '../models/destination.dart';
 import '../theme/colors.dart';
+import '../screens/SearchScreen.dart';  // Importación corregida
+
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -397,8 +399,19 @@ class _HomeScreenState extends State<HomeScreen> {
         BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Perfil'),
       ],
       onTap: (index) {
-        // Navegar a otras pantallas
-      },
+  if (index == 1) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => SearchScreen(), // ← debe ser un Widget
+      ),
+    );
+  
+
+  }
+  // Puedes agregar navegación a las demás pantallas si las tienes
+},
+
     );
   }
 }
