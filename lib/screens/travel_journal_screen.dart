@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import '../widgets/journal_entry.dart';
+import '../widgets/journal_entry_widget.dart';
 import '../widgets/map_preview.dart';
 import '../models/journal_entry.dart';
 import '../models/trip.dart';
@@ -25,8 +25,8 @@ class _TravelJournalScreenState extends State<TravelJournalScreen> {
       content:
           'Hoy llegamos a nuestro destino. El hotel es espectacular con vista al mar...',
       imageUrls: [
-        'https://example.com/beach1.jpg',
-        'https://example.com/beach2.jpg',
+        'https://i0.wp.com/blog.vivaaerobus.com/wp-content/uploads/2019/10/Playa-del-Carmen.jpg?resize=1280%2C640&ssl=1',
+        'https://www.beach.com/wp-content/uploads/2018/10/playadelcarmen.jpg',
       ],
       location: 'Playa del Carmen, México',
       latitude: 20.629559,
@@ -192,10 +192,40 @@ class _TravelJournalScreenState extends State<TravelJournalScreen> {
   }
 
   void _addNewEntry() {
-    // Navegar a pantalla de creación de entrada
+    Navigator.pushNamed(
+      context,
+      '/journal_entry_editnew',
+      arguments: {
+        'tripId': widget.trip.id,
+        'onSave': (JournalEntry newEntry) {
+          setState(() {
+            _entries.add(newEntry);
+          });
+        },
+      },
+    );
   }
 
   void _viewEntryDetails(JournalEntry entry) {
-    // Navegar a pantalla de detalles/edición
+    Navigator.pushNamed(
+      context,
+      '/journal_entry_editnew',
+      arguments: {
+        'entry': entry,
+        'onUpdate': (JournalEntry updatedEntry) {
+          setState(() {
+            final index = _entries.indexWhere((e) => e.id == updatedEntry.id);
+            if (index != -1) {
+              _entries[index] = updatedEntry;
+            }
+          });
+        },
+        'onDelete': (String entryId) {
+          setState(() {
+            _entries.removeWhere((e) => e.id == entryId);
+          });
+        },
+      },
+    );
   }
 }

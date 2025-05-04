@@ -151,7 +151,7 @@ class _HomeScreenState extends State<HomeScreen> {
             children: [
               ActivityIndicator(
                 isActive: true,
-                activeText: 'Viaje en progreso: Cancún',
+                activeText: 'Viaje en progreso: Playa del Carmen',
               ),
               Spacer(),
               Icon(Icons.chevron_right),
@@ -168,9 +168,9 @@ class _HomeScreenState extends State<HomeScreen> {
           const Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text('3 de 5 días completados', style: TextStyle(fontSize: 12)),
+              Text('2 de 7 días completados', style: TextStyle(fontSize: 12)),
               Text(
-                '60% completado',
+                '29% completado',
                 style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
               ),
             ],

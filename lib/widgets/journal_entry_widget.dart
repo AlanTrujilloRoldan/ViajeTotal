@@ -1,16 +1,19 @@
 import 'package:flutter/material.dart';
 import '../models/journal_entry.dart';
+import '../models/trip.dart';
 import '../theme/colors.dart';
 import '../utils/helpers.dart';
 
 class JournalEntryWidget extends StatelessWidget {
   final JournalEntry entry;
+  final Trip? trip;
   final VoidCallback? onTap;
   final bool isEditable;
 
   const JournalEntryWidget({
     super.key,
     required this.entry,
+    this.trip,
     this.onTap,
     this.isEditable = false,
   });
@@ -40,13 +43,6 @@ class JournalEntryWidget extends StatelessWidget {
                       context,
                     ).textTheme.bodySmall?.copyWith(color: AppColors.grey600),
                   ),
-                  if (isEditable)
-                    IconButton(
-                      icon: const Icon(Icons.edit, size: 18),
-                      onPressed: onTap,
-                      padding: EdgeInsets.zero,
-                      constraints: const BoxConstraints(),
-                    ),
                 ],
               ),
               if (entry.location.isNotEmpty)

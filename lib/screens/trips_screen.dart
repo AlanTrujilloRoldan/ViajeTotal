@@ -17,14 +17,15 @@ class _TripsScreenState extends State<TripsScreen> {
   final List<Trip> _trips = [
     Trip(
       id: '1',
-      title: 'Vacaciones en Cancún',
+      title: 'Vacaciones en Playa del Carmen',
       description: 'Viaje familiar a la playa',
       startDate: DateTime.now().subtract(const Duration(days: 2)),
       endDate: DateTime.now().add(const Duration(days: 5)),
       budget: 2500.0,
       destinationIds: ['1', '2'],
       participantIds: ['user1', 'user2'],
-      coverImageUrl: 'https://example.com/cancun.jpg',
+      coverImageUrl:
+          'https://content.r9cdn.net/rimg/dimg/78/70/001b704a-city-15939-163e0a462f2.jpg?crop=true&width=1366&height=768&xhint=1556&yhint=1231ss',
     ),
     Trip(
       id: '2',
