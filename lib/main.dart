@@ -8,6 +8,8 @@ import 'package:viajetotal/screens/search_screen.dart';
 import 'package:viajetotal/screens/trips_screen.dart';
 import 'package:viajetotal/screens/reviews_ratings_screen.dart';
 import 'package:viajetotal/screens/local_recommendations_screen.dart';
+import 'package:viajetotal/screens/journal_entry_new_screen.dart';
+import 'package:viajetotal/screens/journal_entry_edit_screen.dart';
 import 'package:viajetotal/theme/app_theme.dart';
 import 'package:viajetotal/models/destination.dart';
 import 'package:viajetotal/models/trip.dart';
@@ -47,6 +49,25 @@ class ViajeTotalApp extends StatelessWidget {
         '/journal': (context) {
           final trip = ModalRoute.of(context)!.settings.arguments as Trip;
           return TravelJournalScreen(trip: trip);
+        },
+        '/journal_entry_new': (context) {
+          final args =
+              ModalRoute.of(context)!.settings.arguments
+                  as Map<String, dynamic>;
+          return JournalEntryNewScreen(
+            tripId: args['tripId'],
+            onSave: args['onSave'],
+          );
+        },
+        '/journal_entry_edit': (context) {
+          final args =
+              ModalRoute.of(context)!.settings.arguments
+                  as Map<String, dynamic>;
+          return JournalEntryEditScreen(
+            entry: args['entry'],
+            onUpdate: args['onUpdate'],
+            onDelete: args['onDelete'],
+          );
         },
         '/navigation': (context) {
           final args =

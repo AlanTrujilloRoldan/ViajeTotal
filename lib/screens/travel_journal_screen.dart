@@ -194,7 +194,7 @@ class _TravelJournalScreenState extends State<TravelJournalScreen> {
   void _addNewEntry() {
     Navigator.pushNamed(
       context,
-      '/journal_entry_editnew',
+      '/journal_entry_new',
       arguments: {
         'tripId': widget.trip.id,
         'onSave': (JournalEntry newEntry) {
@@ -209,7 +209,7 @@ class _TravelJournalScreenState extends State<TravelJournalScreen> {
   void _viewEntryDetails(JournalEntry entry) {
     Navigator.pushNamed(
       context,
-      '/journal_entry_editnew',
+      '/journal_entry_edit',
       arguments: {
         'entry': entry,
         'onUpdate': (JournalEntry updatedEntry) {
