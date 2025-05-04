@@ -60,7 +60,8 @@ class _CustomSearchBarState extends State<CustomSearchBar> {
         onChanged: widget.onChanged,
         onTap: widget.onTap,
         autofocus: widget.autofocus,
-        readOnly: widget.readOnly,
+        readOnly: true,
+        showCursor: false,
         decoration: InputDecoration(
           hintText: widget.hintText,
           prefixIcon: const Icon(Icons.search, color: AppColors.grey600),
