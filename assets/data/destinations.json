@@ -1,0 +1,55 @@
+[
+  {
+    "id": "1",
+    "name": "Playa del Carmen",
+    "description": "Hermosas playas de arena blanca y aguas cristalinas",
+    "location": "Quintana Roo, México",
+    "latitude": 20.629559,
+    "longitude": -87.073885,
+    "imageUrls": ["https://cdn.sanity.io/images/atvntylo/production/4512065539db3fcdbc34cf03f59e90ff386d1c76-1080x720.webp?w=3840&q=65&fit=clip&auto=format"],
+    "tags": ["Playa", "Relax"],
+    "averageRating": 4.7,
+    "reviewCount": 1245
+  },
+  {
+    "id": "2",
+    "name": "Chichén Itzá",
+    "description": "Maravilla del mundo antiguo, zona arqueológica maya",
+    "location": "Yucatán, México",
+    "latitude": 20.684285,
+    "longitude": -88.567782,
+    "imageUrls": ["https://escapadas.mexicodesconocido.com.mx/wp-content/uploads/2024/02/chichen-itza-pixabay.jpg"],
+    "tags": ["Cultural", "Histórico"],
+    "averageRating": 4.8,
+    "reviewCount": 892
+  },
+  {
+    "id": "3",
+    "name": "Barrancas del Cobre",
+    "description": "Impresionante sistema de cañones en la Sierra Tarahumara",
+    "location": "Chihuahua, México",
+    "latitude": 27.516667,
+    "longitude": -107.766667,
+    "imageUrls": [
+      "https://static.wixstatic.com/media/cf3297_1207992ee7504d6b89bef1ad615630e4~mv2.jpg/v1/fill/w_568,h_378,al_c,q_80,usm_0.66_1.00_0.01,enc_avif,quality_auto/cf3297_1207992ee7504d6b89bef1ad615630e4~mv2.jpg"
+    ],
+    "tags": ["Aventura", "Naturaleza"],
+    "averageRating": 4.9,
+    "reviewCount": 567
+  },
+  {
+    "id": "4",
+    "name": "Pirámides de Cholula",
+    "description": "La pirámide con la base más ancha del mundo",
+    "location": "Puebla, México",
+    "latitude": 19.0579573,
+    "longitude": -98.3022263468972,
+    "imageUrls": [
+      "https://www.turismopuebla.es/wp-content/uploads/2015/02/piramide-cholula.jpg"
+    ],
+    "tags": ["Aventura", "Gastronomía"],
+    "averageRating": 4.2,
+    "reviewCount": 150
+  }
+
+]

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../services/destination_service.dart';
 import '../widgets/destination_card.dart';
 import '../widgets/search_bar.dart';
 import '../widgets/activity_indicator.dart';
@@ -13,64 +14,14 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  final List<Destination> _popularDestinations = [
-    Destination(
-      id: '1',
-      name: 'Playa del Carmen',
-      description: 'Hermosas playas de arena blanca y aguas cristalinas',
-      location: 'Quintana Roo, México',
-      latitude: 20.629559,
-      longitude: -87.073885,
-      imageUrls: [
-        'https://cdn.sanity.io/images/atvntylo/production/4512065539db3fcdbc34cf03f59e90ff386d1c76-1080x720.webp?w=3840&q=65&fit=clip&auto=format',
-      ],
-      tags: ['Playa', 'Relax', 'Familiar'],
-      averageRating: 4.7,
-      reviewCount: 1245,
-    ),
-    Destination(
-      id: '2',
-      name: 'Chichén Itzá',
-      description: 'Maravilla del mundo antiguo, zona arqueológica maya',
-      location: 'Yucatán, México',
-      latitude: 20.684285,
-      longitude: -88.567782,
-      imageUrls: [
-        'https://escapadas.mexicodesconocido.com.mx/wp-content/uploads/2024/02/chichen-itza-pixabay.jpg',
-      ],
-      tags: ['Cultural', 'Histórico'],
-      averageRating: 4.8,
-      reviewCount: 892,
-    ),
-    Destination(
-      id: '3',
-      name: 'Barrancas del Cobre',
-      description: 'Impresionante sistema de cañones en la Sierra Tarahumara',
-      location: 'Chihuahua, México',
-      latitude: 27.516667,
-      longitude: -107.766667,
-      imageUrls: [
-        'https://static.wixstatic.com/media/cf3297_1207992ee7504d6b89bef1ad615630e4~mv2.jpg/v1/fill/w_568,h_378,al_c,q_80,usm_0.66_1.00_0.01,enc_avif,quality_auto/cf3297_1207992ee7504d6b89bef1ad615630e4~mv2.jpg',
-      ],
-      tags: ['Aventura', 'Naturaleza'],
-      averageRating: 4.9,
-      reviewCount: 567,
-    ),
-    Destination(
-      id: '4',
-      name: 'Piramides de Cholula',
-      description: 'La piramide con la base mas ancha del mundo',
-      location: 'Puebla, México',
-      latitude: 19.0579573,
-      longitude: -98.3022263468972,
-      imageUrls: [
-        'https://www.turismopuebla.es/wp-content/uploads/2015/02/piramide-cholula.jpg',
-      ],
-      tags: ['Aventura', 'Gastronomía'],
-      averageRating: 4.2,
-      reviewCount: 150,
-    ),
-  ];
+  final DestinationService _destinationService = DestinationService();
+  late Future<List<Destination>> _destinationsFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    _destinationsFuture = _destinationService.getPopularDestinations();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -102,7 +53,19 @@ class _HomeScreenState extends State<HomeScreen> {
               },
             ),
             const SizedBox(height: 14),
-            _buildPopularDestinations(),
+            FutureBuilder<List<Destination>>(
+              future: _destinationsFuture,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                } else if (snapshot.hasError) {
+                  return Text('Error: ${snapshot.error}');
+                } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                  return const Text('No hay destinos disponibles');
+                }
+                return _buildPopularDestinations(snapshot.data!);
+              },
+            ),
             const SizedBox(height: 25),
 
             // Categorías
@@ -190,31 +153,28 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         if (onSeeAll != null)
           TextButton(onPressed: onSeeAll, child: const Text('Ver todos')),
-        //AGREGAR EL BOTÓN DE VIAJES
       ],
     );
   }
 
-  Widget _buildPopularDestinations() {
+  Widget _buildPopularDestinations(List<Destination> destinations) {
     return SizedBox(
       height: 260,
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
-        padding: const EdgeInsets.symmetric(
-          horizontal: 16,
-        ), // Add horizontal padding
-        itemCount: _popularDestinations.length,
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        itemCount: destinations.length,
         separatorBuilder: (context, index) => const SizedBox(width: 12),
         itemBuilder: (context, index) {
           return SizedBox(
             width: MediaQuery.of(context).size.width * 0.65,
             child: DestinationCard(
-              destination: _popularDestinations[index],
+              destination: destinations[index],
               onTap: () {
                 Navigator.pushNamed(
                   context,
                   '/destination',
-                  arguments: _popularDestinations[index],
+                  arguments: destinations[index],
                 );
               },
             ),
@@ -255,30 +215,30 @@ class _HomeScreenState extends State<HomeScreen> {
     ];
 
     return SizedBox(
-      height: 220, // Fixed height to prevent overflow
+      height: 220,
       child: GridView.count(
         shrinkWrap: true,
         physics: const NeverScrollableScrollPhysics(),
         crossAxisCount: 3,
-        crossAxisSpacing: 8, // Reduced spacing
-        mainAxisSpacing: 8, // Reduced spacing
-        childAspectRatio: 1.2, // Adjusted aspect ratio
+        crossAxisSpacing: 8,
+        mainAxisSpacing: 8,
+        childAspectRatio: 1.2,
         children:
             categories.map((category) {
               return Card(
-                margin: const EdgeInsets.all(4), // Added margin
+                margin: const EdgeInsets.all(4),
                 child: InkWell(
                   borderRadius: BorderRadius.circular(12),
                   onTap: () {
                     // Filtrar por categoría
                   },
                   child: Padding(
-                    padding: const EdgeInsets.all(8), // Reduced padding
+                    padding: const EdgeInsets.all(8),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Container(
-                          padding: const EdgeInsets.all(10), // Reduced padding
+                          padding: const EdgeInsets.all(10),
                           decoration: BoxDecoration(
                             color: (category['color'] as Color).withAlpha(51),
                             shape: BoxShape.circle,
@@ -286,15 +246,15 @@ class _HomeScreenState extends State<HomeScreen> {
                           child: Icon(
                             category['icon'] as IconData,
                             color: category['color'] as Color,
-                            size: 24, // Reduced icon size
+                            size: 24,
                           ),
                         ),
-                        const SizedBox(height: 6), // Reduced spacing
+                        const SizedBox(height: 6),
                         Text(
                           category['name'] as String,
                           textAlign: TextAlign.center,
                           style: const TextStyle(
-                            fontSize: 11, // Reduced font size
+                            fontSize: 11,
                             fontWeight: FontWeight.w500,
                           ),
                         ),
@@ -313,7 +273,7 @@ class _HomeScreenState extends State<HomeScreen> {
       height: 140,
       child: ListView(
         scrollDirection: Axis.horizontal,
-        padding: const EdgeInsets.symmetric(horizontal: 16), // Added padding
+        padding: const EdgeInsets.symmetric(horizontal: 16),
         children:
             [
                   _buildRecommendationCard(
@@ -337,9 +297,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ]
                 .map(
                   (card) => SizedBox(
-                    width:
-                        MediaQuery.of(context).size.width *
-                        0.8, // Responsive width
+                    width: MediaQuery.of(context).size.width * 0.8,
                     child: card,
                   ),
                 )
@@ -393,7 +351,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget _buildBottomNavBar() {
     return BottomNavigationBar(
-      currentIndex: 0, // Home seleccionado
+      currentIndex: 0,
       type: BottomNavigationBarType.fixed,
       selectedItemColor: AppColors.primary,
       unselectedItemColor: AppColors.grey600,
@@ -415,7 +373,6 @@ class _HomeScreenState extends State<HomeScreen> {
             Navigator.pushNamed(context, '/search');
             break;
           case 2:
-            //Realizar redirección a la nueva pantalla de viajes guardados
             Navigator.pushNamed(context, '/trips');
             break;
         }
