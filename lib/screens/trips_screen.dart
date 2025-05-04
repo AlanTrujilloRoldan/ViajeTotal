@@ -214,6 +214,6 @@ class _TripsScreenState extends State<TripsScreen> {
   }
 
   void _viewTripDetails(Trip trip) {
-    Navigator.pushNamed(context, '/trip-details', arguments: trip);
+    Navigator.pushNamed(context, '/journal', arguments: trip);
   }
 }
