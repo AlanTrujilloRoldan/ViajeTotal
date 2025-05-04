@@ -416,7 +416,7 @@ class _HomeScreenState extends State<HomeScreen> {
             break;
           case 2:
             //Realizar redirección a la nueva pantalla de viajes guardados
-            Navigator.pushNamed(context, '/plan-trip');
+            Navigator.pushNamed(context, '/trips');
             break;
         }
       },

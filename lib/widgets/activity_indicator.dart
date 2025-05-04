@@ -6,6 +6,8 @@ class ActivityIndicator extends StatelessWidget {
   final String activeText;
   final String inactiveText;
   final VoidCallback? onTap;
+  final Color? activeColor;
+  final Color? inactiveColor;
 
   const ActivityIndicator({
     super.key,
@@ -13,6 +15,8 @@ class ActivityIndicator extends StatelessWidget {
     this.activeText = 'Activo ahora',
     this.inactiveText = 'Inactivo',
     this.onTap,
+    this.activeColor,
+    this.inactiveColor,
   });
 
   @override
