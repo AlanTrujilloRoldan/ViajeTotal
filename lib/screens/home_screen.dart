@@ -159,7 +159,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           const SizedBox(height: 16),
           LinearProgressIndicator(
-            value: 0.6,
+            value: 0.29,
             backgroundColor: AppColors.grey200,
             color: AppColors.primary,
             borderRadius: BorderRadius.circular(4),

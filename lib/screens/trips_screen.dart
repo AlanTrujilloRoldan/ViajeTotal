@@ -25,7 +25,7 @@ class _TripsScreenState extends State<TripsScreen> {
       destinationIds: ['1', '2'],
       participantIds: ['user1', 'user2'],
       coverImageUrl:
-          'https://content.r9cdn.net/rimg/dimg/78/70/001b704a-city-15939-163e0a462f2.jpg?crop=true&width=1366&height=768&xhint=1556&yhint=1231ss',
+          'https://content.r9cdn.net/rimg/dimg/78/70/001b704a-city-15939-163e0a462f2.jpg?crop=true&width=1366&height=768&xhint=1556&yhint=1231',
     ),
     Trip(
       id: '2',
@@ -36,7 +36,8 @@ class _TripsScreenState extends State<TripsScreen> {
       budget: 1800.0,
       destinationIds: ['3', '4'],
       participantIds: ['user1'],
-      coverImageUrl: 'https://example.com/chiapas.jpg',
+      coverImageUrl:
+          'https://www.asich.com/wp-content/uploads/2023/04/sitios-turisticos-chiapas-593x381.jpg',
     ),
   ];
 
