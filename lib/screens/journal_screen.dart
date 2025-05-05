@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import '../services/journal_service.dart';
 import '../widgets/journal_entry_widget.dart';
 import '../widgets/map_preview.dart';
 import '../models/journal_entry.dart';
@@ -16,25 +17,24 @@ class TravelJournalScreen extends StatefulWidget {
 }
 
 class _TravelJournalScreenState extends State<TravelJournalScreen> {
-  final List<JournalEntry> _entries = [
-    JournalEntry(
-      id: '1',
-      tripId: '1',
-      date: DateTime.now().subtract(const Duration(days: 2)),
-      title: 'Primer día en la playa',
-      content:
-          'Hoy llegamos a nuestro destino. El hotel es espectacular con vista al mar...',
-      imageUrls: [
-        'https://i0.wp.com/blog.vivaaerobus.com/wp-content/uploads/2019/10/Playa-del-Carmen.jpg?resize=1280%2C640&ssl=1',
-        'https://www.beach.com/wp-content/uploads/2018/10/playadelcarmen.jpg',
-      ],
-      location: 'Playa del Carmen, México',
-      latitude: 20.629559,
-      longitude: -87.073885,
-      tags: ['Playa', 'Llegada', 'Hotel'],
-    ),
-    // Más entradas...
-  ];
+  final JournalService _journalService = JournalService();
+  late Future<List<JournalEntry>> _entriesFuture;
+  //List<JournalEntry> _entries = []; // Local cache of entries
+
+  @override
+  void initState() {
+    super.initState();
+    _loadEntries();
+  }
+
+  Future<void> _loadEntries() async {
+    _entriesFuture = _journalService.getJournalEntries(widget.trip.id);
+    _entriesFuture.then((entries) {
+      setState(() {
+        //_entries = entries;
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +45,25 @@ class _TravelJournalScreenState extends State<TravelJournalScreen> {
           IconButton(icon: const Icon(Icons.add), onPressed: _addNewEntry),
         ],
       ),
-      body: _entries.isEmpty ? _buildEmptyState() : _buildJournalList(),
+      body: FutureBuilder<List<JournalEntry>>(
+        future: _entriesFuture,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          }
+
+          if (snapshot.hasError) {
+            return Center(child: Text('Error: ${snapshot.error}'));
+          }
+
+          final entries = snapshot.data ?? [];
+          if (entries.isEmpty) {
+            return _buildEmptyState();
+          }
+
+          return _buildJournalList(entries);
+        },
+      ),
     );
   }
 
@@ -76,7 +94,7 @@ class _TravelJournalScreenState extends State<TravelJournalScreen> {
     );
   }
 
-  Widget _buildJournalList() {
+  Widget _buildJournalList(List<JournalEntry> entries) {
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
@@ -93,25 +111,31 @@ class _TravelJournalScreenState extends State<TravelJournalScreen> {
                 ),
                 const SizedBox(height: 12),
                 // Mapa con ubicaciones
-                if (_entries.any(
+                if (entries.any(
                   (e) => e.latitude != null && e.longitude != null,
                 ))
                   Column(
                     children: [
                       MapPreview(
                         location: LatLng(
-                          _entries
-                              .firstWhere(
-                                (e) =>
-                                    e.latitude != null && e.longitude != null,
-                              )
-                              .latitude!,
-                          _entries
-                              .firstWhere(
-                                (e) =>
-                                    e.latitude != null && e.longitude != null,
-                              )
-                              .longitude!,
+                          entries
+                                  .firstWhere(
+                                    (e) =>
+                                        e.latitude != null &&
+                                        e.longitude != null,
+                                    orElse: () => entries.first,
+                                  )
+                                  .latitude ??
+                              0,
+                          entries
+                                  .firstWhere(
+                                    (e) =>
+                                        e.latitude != null &&
+                                        e.longitude != null,
+                                    orElse: () => entries.first,
+                                  )
+                                  .longitude ??
+                              0,
                         ),
                         height: 150,
                         markerTitle: 'Tu viaje',
@@ -126,7 +150,7 @@ class _TravelJournalScreenState extends State<TravelJournalScreen> {
                     _buildStatItem(
                       icon: Icons.photo_library,
                       value:
-                          _entries
+                          entries
                               .fold(
                                 0,
                                 (sum, entry) => sum + entry.imageUrls.length,
@@ -137,7 +161,7 @@ class _TravelJournalScreenState extends State<TravelJournalScreen> {
                     _buildStatItem(
                       icon: Icons.place,
                       value:
-                          _entries
+                          entries
                               .where((e) => e.location.isNotEmpty)
                               .length
                               .toString(),
@@ -157,12 +181,10 @@ class _TravelJournalScreenState extends State<TravelJournalScreen> {
         ),
         const SizedBox(height: 16),
         // Lista de entradas
-        ..._entries.map(
+        ...entries.map(
           (entry) => JournalEntryWidget(
             entry: entry,
-            onTap: () {
-              _viewEntryDetails(entry);
-            },
+            onTap: () => _viewEntryDetails(entry),
             isEditable: true,
           ),
         ),
@@ -191,41 +213,32 @@ class _TravelJournalScreenState extends State<TravelJournalScreen> {
     );
   }
 
-  void _addNewEntry() {
-    Navigator.pushNamed(
+  void _addNewEntry() async {
+    final newEntry = await Navigator.pushNamed(
       context,
       '/journal_entry_new',
-      arguments: {
-        'tripId': widget.trip.id,
-        'onSave': (JournalEntry newEntry) {
-          setState(() {
-            _entries.add(newEntry);
-          });
-        },
-      },
+      arguments: {'tripId': widget.trip.id},
     );
+
+    if (newEntry != null && newEntry is JournalEntry) {
+      await _journalService.createJournalEntry(newEntry);
+      _loadEntries(); // Refresh the list
+    }
   }
 
-  void _viewEntryDetails(JournalEntry entry) {
-    Navigator.pushNamed(
+  void _viewEntryDetails(JournalEntry entry) async {
+    final result = await Navigator.pushNamed(
       context,
       '/journal_entry_edit',
-      arguments: {
-        'entry': entry,
-        'onUpdate': (JournalEntry updatedEntry) {
-          setState(() {
-            final index = _entries.indexWhere((e) => e.id == updatedEntry.id);
-            if (index != -1) {
-              _entries[index] = updatedEntry;
-            }
-          });
-        },
-        'onDelete': (String entryId) {
-          setState(() {
-            _entries.removeWhere((e) => e.id == entryId);
-          });
-        },
-      },
+      arguments: entry,
     );
+
+    if (result != null && result is JournalEntry) {
+      await _journalService.updateJournalEntry(result);
+      _loadEntries(); // Refresh the list
+    } else if (result == 'deleted') {
+      await _journalService.deleteJournalEntry(entry.id);
+      _loadEntries(); // Refresh the list
+    }
   }
 }

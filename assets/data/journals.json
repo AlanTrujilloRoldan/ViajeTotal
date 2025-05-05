@@ -1,0 +1,16 @@
+{
+    "id": "1",
+    "tripId": "1",
+    "date": "2025-05-02T20:20:00Z",
+    "title": "Primer día en la playa",
+    "content": "Hoy llegamos a nuestro destino. El hotel es espectacular con vista al mar...",
+    "imageUrls": [
+      "https://i0.wp.com/blog.vivaaerobus.com/wp-content/uploads/2019/10/Playa-del-Carmen.jpg?resize=1280%2C640&ssl=1",
+      "https://www.beach.com/wp-content/uploads/2018/10/playadelcarmen.jpg"
+    ],
+    "location": "Playa del Carmen, México",
+    "latitude": 20.629559,
+    "longitude": -87.073885,
+    "tags": ["Playa", "Llegada", "Hotel"]
+  }
+  
