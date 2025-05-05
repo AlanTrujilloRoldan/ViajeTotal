@@ -62,12 +62,6 @@ dev_dependencies:
 # The following section is specific to Flutter packages.
 flutter:
   assets:
-      #Imagenes
-      - assets\img\barranca-cobre.jpg
-      - assets\img\chichen-itza.jpg
-      - assets\img\piramide-cholula.jpg
-      - assets\img\playa-carmen.jpeg
-
       #Data
       - assets\data\destinations.json
 

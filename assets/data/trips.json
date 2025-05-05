@@ -1,0 +1,24 @@
+[
+    {
+      "id": "1",
+      "title": "Vacaciones en Playa del Carmen",
+      "description": "Viaje familiar a la playa",
+      "startDate": "2025-05-02T00:00:00", 
+      "endDate": "2025-05-09T00:00:00",
+      "budget": 2500.0,
+      "destinationIds": ["1", "2"],
+      "participantIds": ["user1", "user2"],
+      "coverImageUrl": "https://content.r9cdn.net/rimg/dimg/78/70/001b704a-city-15939-163e0a462f2.jpg?crop=true&width=1366&height=768&xhint=1556&yhint=1231"
+    },
+    {
+      "id": "2",
+      "title": "Aventura en Chiapas",
+      "description": "Tour por la selva y ruinas",
+      "startDate": "2025-05-14T00:00:00", 
+      "endDate": "2025-05-19T00:00:00",
+      "budget": 1800.0,
+      "destinationIds": ["3", "4"],
+      "participantIds": ["user1"],
+      "coverImageUrl": "https://www.asich.com/wp-content/uploads/2023/04/sitios-turisticos-chiapas-593x381.jpg"
+    }
+  ]
