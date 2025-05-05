@@ -43,6 +43,13 @@ class JournalEntryWidget extends StatelessWidget {
                       context,
                     ).textTheme.bodySmall?.copyWith(color: AppColors.grey600),
                   ),
+                  if (isEditable)
+                    IconButton(
+                      icon: const Icon(Icons.edit, size: 18),
+                      onPressed: onTap,
+                      padding: EdgeInsets.zero,
+                      constraints: const BoxConstraints(),
+                    ),
                 ],
               ),
               if (entry.location.isNotEmpty)

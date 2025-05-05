@@ -214,31 +214,34 @@ class _TravelJournalScreenState extends State<TravelJournalScreen> {
   }
 
   void _addNewEntry() async {
-    final newEntry = await Navigator.pushNamed(
+    await Navigator.pushNamed(
       context,
-      '/journal_entry_new',
-      arguments: {'tripId': widget.trip.id},
+      '/journal_new',
+      arguments: {
+        'tripId': widget.trip.id,
+        'onSave': (JournalEntry newEntry) async {
+          await _journalService.createJournalEntry(newEntry);
+          _loadEntries();
+        },
+      },
     );
-
-    if (newEntry != null && newEntry is JournalEntry) {
-      await _journalService.createJournalEntry(newEntry);
-      _loadEntries(); // Refresh the list
-    }
   }
 
   void _viewEntryDetails(JournalEntry entry) async {
-    final result = await Navigator.pushNamed(
+    await Navigator.pushNamed(
       context,
-      '/journal_entry_edit',
-      arguments: entry,
+      '/journal_edit',
+      arguments: {
+        'entry': entry,
+        'onUpdate': (JournalEntry updatedEntry) async {
+          await _journalService.updateJournalEntry(updatedEntry);
+          _loadEntries(); // Refresh the list
+        },
+        'onDelete': (String entryId) async {
+          await _journalService.deleteJournalEntry(entryId);
+          _loadEntries(); // Refresh the list
+        },
+      },
     );
-
-    if (result != null && result is JournalEntry) {
-      await _journalService.updateJournalEntry(result);
-      _loadEntries(); // Refresh the list
-    } else if (result == 'deleted') {
-      await _journalService.deleteJournalEntry(entry.id);
-      _loadEntries(); // Refresh the list
-    }
   }
 }

@@ -50,7 +50,7 @@ class ViajeTotalApp extends StatelessWidget {
           final trip = ModalRoute.of(context)!.settings.arguments as Trip;
           return TravelJournalScreen(trip: trip);
         },
-        '/journal_entry_new': (context) {
+        '/journal_new': (context) {
           final args =
               ModalRoute.of(context)!.settings.arguments
                   as Map<String, dynamic>;
@@ -59,7 +59,7 @@ class ViajeTotalApp extends StatelessWidget {
             onSave: args['onSave'],
           );
         },
-        '/journal_entry_edit': (context) {
+        '/journal_edit': (context) {
           final args =
               ModalRoute.of(context)!.settings.arguments
                   as Map<String, dynamic>;
