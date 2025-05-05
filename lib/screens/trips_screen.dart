@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../models/trip.dart';
+import '../services/trip_service.dart';
 import '../widgets/activity_indicator.dart';
 import '../widgets/budget_progress.dart';
 import '../theme/colors.dart';
@@ -13,33 +14,14 @@ class TripsScreen extends StatefulWidget {
 }
 
 class _TripsScreenState extends State<TripsScreen> {
-  // Lista de viajes de ejemplo (en una app real vendría de tu servicio)
-  final List<Trip> _trips = [
-    Trip(
-      id: '1',
-      title: 'Vacaciones en Playa del Carmen',
-      description: 'Viaje familiar a la playa',
-      startDate: DateTime.now().subtract(const Duration(days: 2)),
-      endDate: DateTime.now().add(const Duration(days: 5)),
-      budget: 2500.0,
-      destinationIds: ['1', '2'],
-      participantIds: ['user1', 'user2'],
-      coverImageUrl:
-          'https://content.r9cdn.net/rimg/dimg/78/70/001b704a-city-15939-163e0a462f2.jpg?crop=true&width=1366&height=768&xhint=1556&yhint=1231',
-    ),
-    Trip(
-      id: '2',
-      title: 'Aventura en Chiapas',
-      description: 'Tour por la selva y ruinas',
-      startDate: DateTime.now().add(const Duration(days: 10)),
-      endDate: DateTime.now().add(const Duration(days: 15)),
-      budget: 1800.0,
-      destinationIds: ['3', '4'],
-      participantIds: ['user1'],
-      coverImageUrl:
-          'https://www.asich.com/wp-content/uploads/2023/04/sitios-turisticos-chiapas-593x381.jpg',
-    ),
-  ];
+  final TripService _tripService = TripService();
+  late Future<List<Trip>> _tripsFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    _tripsFuture = _tripService.getUserTrips(); // Cargar viajes al iniciar
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -47,7 +29,6 @@ class _TripsScreenState extends State<TripsScreen> {
       appBar: AppBar(title: const Text('Mis Viajes'), centerTitle: true),
       body: Column(
         children: [
-          // Botón grande para añadir viaje
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: SizedBox(
@@ -71,12 +52,29 @@ class _TripsScreenState extends State<TripsScreen> {
 
           // Lista de viajes
           Expanded(
-            child: ListView.separated(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              itemCount: _trips.length,
-              separatorBuilder: (context, index) => const SizedBox(height: 16),
-              itemBuilder: (context, index) {
-                return _buildTripCard(_trips[index]);
+            child: FutureBuilder<List<Trip>>(
+              future: _tripsFuture,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                } else if (snapshot.hasError) {
+                  return Center(child: Text('Error: ${snapshot.error}'));
+                } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                  return const Center(
+                    child: Text('No hay viajes planificados'),
+                  );
+                }
+
+                final trips = snapshot.data!;
+                return ListView.separated(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  itemCount: trips.length,
+                  separatorBuilder:
+                      (context, index) => const SizedBox(height: 16),
+                  itemBuilder: (context, index) {
+                    return _buildTripCard(trips[index]);
+                  },
+                );
               },
             ),
           ),
