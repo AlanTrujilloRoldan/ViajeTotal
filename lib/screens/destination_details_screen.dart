@@ -241,17 +241,41 @@ class _DestinationDetailsScreenState extends State<DestinationDetailsScreen> {
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.center, // Centrar los botones
           children: [
+            // Botón de Recomendaciones locales
             Expanded(
+              flex: 3, // 60% del espacio
+              child: OutlinedButton.icon(
+                icon: const Icon(Icons.near_me, size: 20),
+                label: const Text(
+                  'Recomendaciones locales',
+                  style: TextStyle(fontSize: 14),
+                ),
+                onPressed: () {},
+                style: OutlinedButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(vertical: 14),
+                  side: BorderSide(color: Colors.grey.shade300),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(width: 12),
+            // Botón de Visitar
+            Expanded(
+              flex: 2, // 40% del espacio
               child: ElevatedButton.icon(
-                icon: const Icon(Icons.flag),
-                label: const Text('Visitar'),
+                icon: const Icon(Icons.flag, size: 20),
+                label: const Text('Visitar', style: TextStyle(fontSize: 14)),
                 onPressed: () {
                   // Agregar a un viaje
                 },
                 style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  padding: const EdgeInsets.symmetric(vertical: 14),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
                 ),
               ),
             ),
