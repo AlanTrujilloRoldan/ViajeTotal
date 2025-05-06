@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import '../services/destination_service.dart';
+import '../services/trip_service.dart';
 import '../widgets/destination_card.dart';
 import '../widgets/search_bar.dart';
 import '../widgets/activity_indicator.dart';
 import '../models/destination.dart';
+import '../models/trip.dart';
 import '../theme/colors.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -94,52 +96,106 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildActiveTripsSection() {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: AppColors.travelLight,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withAlpha(13),
-            blurRadius: 8,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Row(
-            children: [
-              ActivityIndicator(
-                isActive: true,
-                activeText: 'Viaje en progreso: Playa del Carmen',
+    final tripService = TripService();
+
+    return FutureBuilder<List<Trip>>(
+      future: tripService.getUserTrips(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
+        }
+
+        if (snapshot.hasError) {
+          return Container(
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: AppColors.travelLight,
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: const Text('Error al cargar los viajes'),
+          );
+        }
+
+        final trips = snapshot.data ?? [];
+        final activeTrips =
+            trips.where((trip) {
+              final status = tripService.getTripStatus(trip);
+              return status == 'En progreso';
+            }).toList();
+
+        if (activeTrips.isEmpty) {
+          return Container(
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: AppColors.travelLight,
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: const Text('No tienes viajes en progreso'),
+          );
+        }
+
+        // Tomamos el primer viaje activo (puedes modificar para mostrar varios)
+        final currentTrip = activeTrips.first;
+        final progress = tripService.calculateTripProgress(currentTrip);
+        final totalDays =
+            currentTrip.endDate.difference(currentTrip.startDate).inDays;
+        final daysPassed =
+            DateTime.now().difference(currentTrip.startDate).inDays;
+
+        return Container(
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: AppColors.travelLight,
+            borderRadius: BorderRadius.circular(12),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withAlpha(13),
+                blurRadius: 8,
+                offset: const Offset(0, 4),
               ),
-              Spacer(),
-              Icon(Icons.chevron_right),
             ],
           ),
-          const SizedBox(height: 16),
-          LinearProgressIndicator(
-            value: 0.29,
-            backgroundColor: AppColors.grey200,
-            color: AppColors.primary,
-            borderRadius: BorderRadius.circular(4),
-          ),
-          const SizedBox(height: 8),
-          const Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('2 de 7 días completados', style: TextStyle(fontSize: 12)),
-              Text(
-                '29% completado',
-                style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+              Row(
+                children: [
+                  ActivityIndicator(
+                    isActive: true,
+                    activeText: 'Viaje en progreso: ${currentTrip.title}',
+                  ),
+                  const Spacer(),
+                  const Icon(Icons.chevron_right),
+                ],
+              ),
+              const SizedBox(height: 16),
+              LinearProgressIndicator(
+                value: progress,
+                backgroundColor: AppColors.grey200,
+                color: AppColors.primary,
+                borderRadius: BorderRadius.circular(4),
+              ),
+              const SizedBox(height: 8),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    '$daysPassed de $totalDays días completados',
+                    style: const TextStyle(fontSize: 12),
+                  ),
+                  Text(
+                    '${(progress * 100).toStringAsFixed(0)}% completado',
+                    style: const TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
-        ],
-      ),
+        );
+      },
     );
   }
 
