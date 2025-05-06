@@ -124,7 +124,22 @@ class _DestinationDetailsScreenState extends State<DestinationDetailsScreen> {
               background: PhotoGallery(
                 imageUrls: widget.destination.imageUrls,
                 onPhotoTap: (index) {
-                  // Implementar visor de imágenes completo
+                  showDialog(
+                    context: context,
+                    builder:
+                        (context) => Dialog(
+                          child: GestureDetector(
+                            onTap: () => Navigator.pop(context),
+                            child: InteractiveViewer(
+                              panEnabled: true,
+                              scaleEnabled: true,
+                              child: Image.network(
+                                widget.destination.imageUrls[index],
+                              ),
+                            ),
+                          ),
+                        ),
+                  );
                 },
               ),
             ),
