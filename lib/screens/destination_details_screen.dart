@@ -241,18 +241,8 @@ class _DestinationDetailsScreenState extends State<DestinationDetailsScreen> {
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Row(
+          mainAxisAlignment: MainAxisAlignment.center, // Centrar los botones
           children: [
-            Expanded(
-              child: OutlinedButton.icon(
-                icon: const Icon(Icons.favorite_border),
-                label: const Text('Guardar'),
-                onPressed: () {},
-                style: OutlinedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                ),
-              ),
-            ),
-            const SizedBox(width: 16),
             Expanded(
               child: ElevatedButton.icon(
                 icon: const Icon(Icons.flag),
