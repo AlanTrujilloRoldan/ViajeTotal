@@ -80,6 +80,7 @@ class _TripsScreenState extends State<TripsScreen> {
           ),
         ],
       ),
+      bottomNavigationBar: _buildBottomNavBar(),
     );
   }
 
@@ -206,6 +207,37 @@ class _TripsScreenState extends State<TripsScreen> {
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildBottomNavBar() {
+    return BottomNavigationBar(
+      currentIndex: 0,
+      type: BottomNavigationBarType.fixed,
+      selectedItemColor: AppColors.primary,
+      unselectedItemColor: AppColors.grey600,
+      items: const [
+        BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Inicio'),
+        BottomNavigationBarItem(icon: Icon(Icons.hiking), label: 'Destinos'),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.airplane_ticket),
+          label: 'Mis Viajes',
+        ),
+        BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Perfil'),
+      ],
+      onTap: (index) {
+        switch (index) {
+          case 0:
+            Navigator.pushNamed(context, '/');
+            break;
+          case 1:
+            Navigator.pushNamed(context, '/search');
+            break;
+          case 2:
+            Navigator.pushNamed(context, '/trips');
+            break;
+        }
+      },
     );
   }
 

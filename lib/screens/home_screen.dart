@@ -357,10 +357,10 @@ class _HomeScreenState extends State<HomeScreen> {
       unselectedItemColor: AppColors.grey600,
       items: const [
         BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Inicio'),
-        BottomNavigationBarItem(icon: Icon(Icons.search), label: 'Explorar'),
+        BottomNavigationBarItem(icon: Icon(Icons.hiking), label: 'Destinos'),
         BottomNavigationBarItem(
           icon: Icon(Icons.airplane_ticket),
-          label: 'Viajes',
+          label: 'Mis Viajes',
         ),
         BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Perfil'),
       ],
