@@ -4,7 +4,7 @@ import 'package:viajetotal/screens/destination_details_screen.dart';
 import 'package:viajetotal/screens/trip_planning_screen.dart';
 import 'package:viajetotal/screens/journal_screen.dart';
 import 'package:viajetotal/screens/maps_navigation_screen.dart';
-import 'package:viajetotal/screens/search_screen.dart';
+import 'package:viajetotal/screens/destination_screen.dart';
 import 'package:viajetotal/screens/trips_screen.dart';
 import 'package:viajetotal/screens/reviews_ratings_screen.dart';
 import 'package:viajetotal/screens/local_recommendations_screen.dart';

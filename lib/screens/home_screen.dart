@@ -49,7 +49,7 @@ class _HomeScreenState extends State<HomeScreen> {
             _buildSectionHeader(
               title: 'Destinos populares',
               onSeeAll: () {
-                // Navegar a lista completa de destinos
+                Navigator.pushNamed(context, '/search');
               },
             ),
             const SizedBox(height: 14),
