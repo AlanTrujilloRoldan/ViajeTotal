@@ -293,7 +293,7 @@ class _DestinationDetailsScreenState extends State<DestinationDetailsScreen> {
                   Navigator.pushNamed(
                     context,
                     '/plan-trip',
-                    arguments: widget.destination.id,
+                    arguments: widget.destination,
                   );
                 },
                 style: ElevatedButton.styleFrom(

@@ -4,13 +4,19 @@ import 'package:intl/intl.dart';
 import '../models/destination.dart';
 import '../models/trip.dart';
 import '../services/trip_service.dart';
+import '../services/destination_service.dart';
 import '../widgets/destination_card.dart';
 import '../widgets/search_bar.dart';
 import '../widgets/tag_selector.dart';
 import '../widgets/budget_progress.dart';
 
 class TripPlanningScreen extends StatefulWidget {
-  const TripPlanningScreen({super.key});
+  final Destination? initialDestination;
+  
+  const TripPlanningScreen({
+    super.key,
+    this.initialDestination,
+  });
 
   @override
   State<TripPlanningScreen> createState() => _TripPlanningScreenState();
@@ -21,12 +27,21 @@ class _TripPlanningScreenState extends State<TripPlanningScreen> {
   final _titleController = TextEditingController();
   final _descriptionController = TextEditingController();
   final _budgetController = TextEditingController(text: '1000');
+  final DestinationService _destinationService = DestinationService();
 
   DateTime _startDate = DateTime.now();
   DateTime _endDate = DateTime.now().add(const Duration(days: 7));
   List<String> _selectedTags = ['Vacaciones'];
   final List<Destination> _selectedDestinations = [];
   bool _isSaving = false;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.initialDestination != null) {
+      _selectedDestinations.add(widget.initialDestination!);
+    }
+  }
 
   @override
   void dispose() {
@@ -48,29 +63,28 @@ class _TripPlanningScreenState extends State<TripPlanningScreen> {
           ),
         ],
       ),
-      body:
-          _isSaving
-              ? const Center(child: CircularProgressIndicator())
-              : SingleChildScrollView(
-                padding: const EdgeInsets.all(16),
-                child: Form(
-                  key: _formKey,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      _buildBasicInfoSection(),
-                      const SizedBox(height: 24),
-                      _buildDatesSection(),
-                      const SizedBox(height: 24),
-                      _buildBudgetSection(),
-                      const SizedBox(height: 24),
-                      _buildTagsSection(),
-                      const SizedBox(height: 24),
-                      _buildDestinationsSection(),
-                    ],
-                  ),
+      body: _isSaving
+          ? const Center(child: CircularProgressIndicator())
+          : SingleChildScrollView(
+              padding: const EdgeInsets.all(16),
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _buildBasicInfoSection(),
+                    const SizedBox(height: 24),
+                    _buildDatesSection(),
+                    const SizedBox(height: 24),
+                    _buildBudgetSection(),
+                    const SizedBox(height: 24),
+                    _buildTagsSection(),
+                    const SizedBox(height: 24),
+                    _buildDestinationsSection(),
+                  ],
                 ),
               ),
+            ),
     );
   }
 
@@ -259,78 +273,96 @@ class _TripPlanningScreenState extends State<TripPlanningScreen> {
   }
 
   Future<void> _searchDestinations() async {
+    final List<Destination> allDestinations = await _destinationService.getPopularDestinations();
+    
     final Destination? selected = await showDialog<Destination>(
       context: context,
-      builder:
-          (context) => AlertDialog(
-            title: const Text('Buscar destinos'),
-            content: SizedBox(
-              width: double.maxFinite,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const CustomSearchBar(hintText: 'Buscar destinos...'),
-                  const SizedBox(height: 16),
-                  Expanded(
-                    child: ListView(
-                      children: [
-                        // Aquí iría la lista de resultados de búsqueda real
-                        _buildDestinationListItem('Playa del Carmen', 'México'),
-                        _buildDestinationListItem('Cancún', 'México'),
-                        _buildDestinationListItem('Tulum', 'México'),
-                      ],
+      builder: (context) {
+        String searchQuery = '';
+        List<Destination> filteredDestinations = allDestinations;
+
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              title: const Text('Buscar destinos'),
+              content: SizedBox(
+                width: double.maxFinite,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    CustomSearchBar(
+                      hintText: 'Buscar destinos...',
+                      onChanged: (query) {
+                        setState(() {
+                          searchQuery = query.toLowerCase();
+                          filteredDestinations = allDestinations.where((dest) =>
+                            dest.name.toLowerCase().contains(searchQuery) ||
+                            dest.location.toLowerCase().contains(searchQuery)
+                          ).toList();
+                        });
+                      },
                     ),
-                  ),
-                ],
+                    const SizedBox(height: 16),
+                    Expanded(
+                      child: filteredDestinations.isEmpty
+                          ? const Center(child: Text('No se encontraron destinos'))
+                          : ListView.builder(
+                              itemCount: filteredDestinations.length,
+                              itemBuilder: (context, index) {
+                                final destination = filteredDestinations[index];
+                                return ListTile(
+                                  leading: destination.imageUrls.isNotEmpty
+                                      ? CircleAvatar(
+                                          backgroundImage: NetworkImage(
+                                            destination.imageUrls.first),
+                                          radius: 20,
+                                        )
+                                      : const CircleAvatar(child: Icon(Icons.place)),
+                                  title: Text(destination.name),
+                                  subtitle: Text(destination.location),
+                                  trailing: const Icon(Icons.chevron_right),
+                                  onTap: () {
+                                    Navigator.pop(context, destination);
+                                  },
+                                );
+                              },
+                            ),
+                    ),
+                  ],
+                ),
               ),
-            ),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(context),
-                child: const Text('Cancelar'),
-              ),
-            ],
-          ),
-    );
-
-    if (selected != null) {
-      setState(() {
-        _selectedDestinations.add(selected);
-      });
-    }
-  }
-
-  ListTile _buildDestinationListItem(String name, String location) {
-    return ListTile(
-      title: Text(name),
-      subtitle: Text(location),
-      trailing: const Icon(Icons.chevron_right),
-      onTap: () {
-        Navigator.pop(
-          context,
-          Destination(
-            id: DateTime.now().millisecondsSinceEpoch.toString(),
-            name: name,
-            description: 'Descripción de ejemplo para $name',
-            location: location,
-            latitude: 0,
-            longitude: 0,
-            imageUrls: ['https://example.com/image.jpg'],
-            tags: [],
-            averageRating: 4.5,
-            reviewCount: 100,
-          ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: const Text('Cancelar'),
+                ),
+              ],
+            );
+          },
         );
       },
     );
+
+    if (selected != null && !_selectedDestinations.any((d) => d.id == selected.id)) {
+      if (mounted) {
+        setState(() {
+          _selectedDestinations.add(selected);
+        });
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('${selected.name} agregado a tu viaje')),
+        );
+      }
+    }
   }
 
   Future<void> _saveTrip() async {
     if (!_formKey.currentState!.validate()) return;
     if (_selectedDestinations.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Selecciona al menos un destino')),
-      );
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Selecciona al menos un destino')),
+        );
+      }
       return;
     }
 
@@ -349,11 +381,8 @@ class _TripPlanningScreenState extends State<TripPlanningScreen> {
     );
 
     try {
-      await Provider.of<TripService>(
-        context,
-        listen: false,
-      ).createTrip(newTrip);
-
+      await Provider.of<TripService>(context, listen: false).createTrip(newTrip);
+      
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('¡Viaje creado exitosamente!')),
@@ -376,41 +405,34 @@ class _TripPlanningScreenState extends State<TripPlanningScreen> {
   void _showDestinationDetails(Destination destination) {
     showDialog(
       context: context,
-      builder:
-          (context) => AlertDialog(
-            title: Text(destination.name),
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Image.network(
-                  destination.imageUrls.firstOrNull ??
-                      'https://via.placeholder.com/150',
-                  height: 150,
-                  fit: BoxFit.cover,
-                ),
-                const SizedBox(height: 16),
-                Text(destination.description),
-              ],
+      builder: (context) => AlertDialog(
+        title: Text(destination.name),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Image.network(
+              destination.imageUrls.firstOrNull ?? 'https://via.placeholder.com/150',
+              height: 150,
+              fit: BoxFit.cover,
             ),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  setState(() {
-                    _selectedDestinations.remove(destination);
-                  });
-                  Navigator.pop(context);
-                },
-                child: const Text(
-                  'Eliminar',
-                  style: TextStyle(color: Colors.red),
-                ),
-              ),
-              TextButton(
-                onPressed: () => Navigator.pop(context),
-                child: const Text('Cerrar'),
-              ),
-            ],
+            const SizedBox(height: 16),
+            Text(destination.description),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              setState(() => _selectedDestinations.remove(destination));
+              Navigator.pop(context);
+            },
+            child: const Text('Eliminar', style: TextStyle(color: Colors.red)),
           ),
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cerrar'),
+          ),
+        ],
+      ),
     );
   }
 }

@@ -45,7 +45,12 @@ class ViajeTotalApp extends StatelessWidget {
               ModalRoute.of(context)!.settings.arguments as Destination;
           return DestinationDetailsScreen(destination: destination);
         },
-        '/plan-trip': (context) => const TripPlanningScreen(),
+        '/plan-trip': (context) {
+          final args = ModalRoute.of(context)?.settings.arguments;
+          return TripPlanningScreen(
+            initialDestination: args is Destination ? args : null,
+          );
+        },
         '/journal': (context) {
           final trip = ModalRoute.of(context)!.settings.arguments as Trip;
           return TravelJournalScreen(trip: trip);
