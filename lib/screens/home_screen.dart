@@ -134,57 +134,66 @@ class _HomeScreenState extends State<HomeScreen> {
         final daysPassed =
             DateTime.now().difference(currentTrip.startDate).inDays;
 
-        return Container(
-          padding: const EdgeInsets.all(16),
-          decoration: BoxDecoration(
-            color: AppColors.travelLight,
-            borderRadius: BorderRadius.circular(12),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withAlpha(13),
-                blurRadius: 8,
-                offset: const Offset(0, 4),
-              ),
-            ],
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  ActivityIndicator(
-                    isActive: true,
-                    activeText: 'Viaje en progreso: ${currentTrip.title}',
-                  ),
-                  const Spacer(),
-                  const Icon(Icons.chevron_right),
-                ],
-              ),
-              const SizedBox(height: 16),
-              LinearProgressIndicator(
-                value: progress,
-                backgroundColor: AppColors.grey200,
-                color: AppColors.primary,
-                borderRadius: BorderRadius.circular(4),
-              ),
-              const SizedBox(height: 8),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    '$daysPassed de $totalDays días completados',
-                    style: const TextStyle(fontSize: 12),
-                  ),
-                  Text(
-                    '${(progress * 100).toStringAsFixed(0)}% completado',
-                    style: const TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.bold,
+        return GestureDetector(
+          onTap: () {
+            Navigator.pushNamed(
+              context,
+              '/journal', // Asegúrate de tener esta ruta configurada
+              arguments: currentTrip, // Pasamos el objeto Trip completo
+            );
+          },
+          child: Container(
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: AppColors.travelLight,
+              borderRadius: BorderRadius.circular(12),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withAlpha(13),
+                  blurRadius: 8,
+                  offset: const Offset(0, 4),
+                ),
+              ],
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    ActivityIndicator(
+                      isActive: true,
+                      activeText: 'Viaje en progreso: ${currentTrip.title}',
                     ),
-                  ),
-                ],
-              ),
-            ],
+                    const Spacer(),
+                    const Icon(Icons.chevron_right),
+                  ],
+                ),
+                const SizedBox(height: 16),
+                LinearProgressIndicator(
+                  value: progress,
+                  backgroundColor: AppColors.grey200,
+                  color: AppColors.primary,
+                  borderRadius: BorderRadius.circular(4),
+                ),
+                const SizedBox(height: 8),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      '$daysPassed de $totalDays días completados',
+                      style: const TextStyle(fontSize: 12),
+                    ),
+                    Text(
+                      '${(progress * 100).toStringAsFixed(0)}% completado',
+                      style: const TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
         );
       },
@@ -416,10 +425,10 @@ class _HomeScreenState extends State<HomeScreen> {
       unselectedItemColor: AppColors.grey600,
       items: const [
         BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Inicio'),
-        BottomNavigationBarItem(icon: Icon(Icons.search), label: 'Explorar'),
+        BottomNavigationBarItem(icon: Icon(Icons.hiking), label: 'Destinos'),
         BottomNavigationBarItem(
           icon: Icon(Icons.airplane_ticket),
-          label: 'Viajes',
+          label: 'Mis Viajes',
         ),
         BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Perfil'),
       ],
