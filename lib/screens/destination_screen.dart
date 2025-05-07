@@ -3,6 +3,7 @@ import '../services/destination_service.dart';
 import '../widgets/destination_card.dart';
 import '../widgets/category_chip.dart';
 import '../models/destination.dart';
+import '../theme/colors.dart';
 
 class SearchScreen extends StatefulWidget {
   const SearchScreen({super.key});
@@ -183,6 +184,7 @@ class SearchScreenState extends State<SearchScreen> {
           ],
         ),
       ),
+      bottomNavigationBar: _buildBottomNavBar(),
     );
   }
 
@@ -201,6 +203,37 @@ class SearchScreenState extends State<SearchScreen> {
             );
           },
         );
+      },
+    );
+  }
+
+  Widget _buildBottomNavBar() {
+    return BottomNavigationBar(
+      currentIndex: 0,
+      type: BottomNavigationBarType.fixed,
+      selectedItemColor: AppColors.primary,
+      unselectedItemColor: AppColors.grey600,
+      items: const [
+        BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Inicio'),
+        BottomNavigationBarItem(icon: Icon(Icons.hiking), label: 'Destinos'),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.airplane_ticket),
+          label: 'Mis Viajes',
+        ),
+        BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Perfil'),
+      ],
+      onTap: (index) {
+        switch (index) {
+          case 0:
+            Navigator.pushNamed(context, '/');
+            break;
+          case 1:
+            Navigator.pushNamed(context, '/search');
+            break;
+          case 2:
+            Navigator.pushNamed(context, '/trips');
+            break;
+        }
       },
     );
   }
