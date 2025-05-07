@@ -19,4 +19,9 @@ class DestinationService {
       return null;
     }
   }
+
+  Future<List<Destination>> getDestinationsByCategory(String category) async {
+    final allDestinations = await getPopularDestinations();
+    return allDestinations.where((d) => d.tags.contains(category)).toList();
+  }
 }

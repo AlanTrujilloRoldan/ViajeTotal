@@ -22,7 +22,15 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
+    _loadDestinations();
+  }
+
+  Future<void> _loadDestinations() async {
     _destinationsFuture = _destinationService.getPopularDestinations();
+  }
+
+  void _navigateToSearchWithCategory(String category) {
+    Navigator.pushNamed(context, '/search', arguments: {'category': category});
   }
 
   @override
@@ -34,25 +42,16 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Barra de búsqueda
             CustomSearchBar(
               hintText: 'Buscar destinos, viajes...',
-              onTap: () {
-                Navigator.pushNamed(context, '/search');
-              },
+              onTap: () => Navigator.pushNamed(context, '/search'),
             ),
             const SizedBox(height: 24),
-
-            // Sección de viajes activos
             _buildActiveTripsSection(),
             const SizedBox(height: 24),
-
-            // Destinos populares
             _buildSectionHeader(
               title: 'Destinos populares',
-              onSeeAll: () {
-                Navigator.pushNamed(context, '/search');
-              },
+              onSeeAll: () => Navigator.pushNamed(context, '/search'),
             ),
             const SizedBox(height: 14),
             FutureBuilder<List<Destination>>(
@@ -69,8 +68,6 @@ class _HomeScreenState extends State<HomeScreen> {
               },
             ),
             const SizedBox(height: 25),
-
-            // Categorías
             _buildSectionHeader(
               title: 'Explorar por categoría',
               onSeeAll: null,
@@ -78,13 +75,9 @@ class _HomeScreenState extends State<HomeScreen> {
             const SizedBox(height: 12),
             _buildCategoriesGrid(),
             const SizedBox(height: 24),
-
-            // Recomendaciones personalizadas
             _buildSectionHeader(
               title: 'Recomendaciones para ti',
-              onSeeAll: () {
-                // Navegar a recomendaciones personalizadas
-              },
+              onSeeAll: () {},
             ),
             const SizedBox(height: 12),
             _buildPersonalizedRecommendations(),
@@ -134,7 +127,6 @@ class _HomeScreenState extends State<HomeScreen> {
           );
         }
 
-        // Tomamos el primer viaje activo (puedes modificar para mostrar varios)
         final currentTrip = activeTrips.first;
         final progress = tripService.calculateTripProgress(currentTrip);
         final totalDays =
@@ -246,27 +238,37 @@ class _HomeScreenState extends State<HomeScreen> {
         'icon': Icons.beach_access,
         'name': 'Playas',
         'color': AppColors.leisure,
+        'tag': 'Playa',
       },
       {
         'icon': Icons.landscape,
         'name': 'Naturaleza',
         'color': AppColors.success,
+        'tag': 'Naturaleza',
       },
       {
         'icon': Icons.account_balance,
         'name': 'Cultural',
         'color': AppColors.secondary,
+        'tag': 'Cultural',
       },
-      {'icon': Icons.hiking, 'name': 'Aventura', 'color': AppColors.adventure},
+      {
+        'icon': Icons.hiking,
+        'name': 'Aventura',
+        'color': AppColors.adventure,
+        'tag': 'Aventura',
+      },
       {
         'icon': Icons.family_restroom,
         'name': 'Familiar',
         'color': AppColors.primaryLight,
+        'tag': 'Familiar',
       },
       {
         'icon': Icons.fastfood,
         'name': 'Gastronomía',
         'color': AppColors.secondaryDark,
+        'tag': 'Gastronomía',
       },
     ];
 
@@ -285,9 +287,10 @@ class _HomeScreenState extends State<HomeScreen> {
                 margin: const EdgeInsets.all(4),
                 child: InkWell(
                   borderRadius: BorderRadius.circular(12),
-                  onTap: () {
-                    // Filtrar por categoría
-                  },
+                  onTap:
+                      () => _navigateToSearchWithCategory(
+                        category['tag'] as String,
+                      ),
                   child: Padding(
                     padding: const EdgeInsets.all(8),
                     child: Column(
@@ -413,10 +416,10 @@ class _HomeScreenState extends State<HomeScreen> {
       unselectedItemColor: AppColors.grey600,
       items: const [
         BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Inicio'),
-        BottomNavigationBarItem(icon: Icon(Icons.hiking), label: 'Destinos'),
+        BottomNavigationBarItem(icon: Icon(Icons.search), label: 'Explorar'),
         BottomNavigationBarItem(
           icon: Icon(Icons.airplane_ticket),
-          label: 'Mis Viajes',
+          label: 'Viajes',
         ),
         BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Perfil'),
       ],
