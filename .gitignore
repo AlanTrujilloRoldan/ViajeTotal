@@ -122,3 +122,4 @@ app.*.symbols
 #Seguridad
 android/app/src/main/res/values/secrets.xml
 android/gradle.properties
+.vscode/settings.json

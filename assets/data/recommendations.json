@@ -1,0 +1,28 @@
+[
+  {
+    "id": "1",
+    "destinationId": "1",
+    "title": "Restaurante La Parrilla",
+    "description": "Carnes asadas y comida local",
+    "category": "Restaurante",
+    "address": "Av. Principal 123",
+    "price": 25.0,
+    "rating": 4.5,
+    "imageUrls": ["https://example.com/rest1.jpg"],
+    "websiteUrl": "https://laparrilla.com",
+    "phoneNumber": "+123456789"
+  },
+  {
+    "id": "2",
+    "destinationId": "1",
+    "title": "Hotel Playa Dorada",
+    "description": "Hotel frente al mar con todas las comodidades",
+    "category": "Hotel",
+    "address": "Calle Costera 456",
+    "price": 120.0,
+    "rating": 4.2,
+    "imageUrls": ["https://example.com/hotel1.jpg"],
+    "websiteUrl": "https://playadorada.com",
+    "phoneNumber": "+987654321"
+  }
+]

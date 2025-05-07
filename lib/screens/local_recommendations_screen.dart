@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../widgets/search_bar.dart';
 import '../widgets/rating_bar.dart';
 import '../models/recommendation.dart';
+import '../services/recommendation_service.dart';
 import '../theme/colors.dart';
 
 class LocalRecommendationsScreen extends StatefulWidget {
@@ -14,73 +15,86 @@ class LocalRecommendationsScreen extends StatefulWidget {
       _LocalRecommendationsScreenState();
 }
 
-class _LocalRecommendationsScreenState
-    extends State<LocalRecommendationsScreen> {
+class _LocalRecommendationsScreenState extends State<LocalRecommendationsScreen> {
   String _selectedCategory = 'Todos';
-  final List<Recommendation> _recommendations = [
-    Recommendation(
-      id: '1',
-      destinationId: '1',
-      title: 'Restaurante La Parrilla',
-      description: 'Carnes asadas y comida local',
-      category: 'Restaurante',
-      address: 'Av. Principal 123',
-      price: 25.0,
-      rating: 4.5,
-      imageUrls: ['https://example.com/rest1.jpg'],
-      websiteUrl: 'https://laparrilla.com',
-      phoneNumber: '+123456789',
-    ),
-    // Más recomendaciones...
-  ];
+  late Future<List<Recommendation>> _recommendationsFuture;
+  final RecommendationService _recommendationService = RecommendationService();
+
+  @override
+  void initState() {
+    super.initState();
+    _recommendationsFuture = _loadRecommendations();
+  }
+
+  Future<List<Recommendation>> _loadRecommendations() async {
+    final allRecommendations = await _recommendationService.getRecommendationServices();
+    return allRecommendations.where((r) => r.destinationId == widget.destinationId).toList();
+  }
 
   @override
   Widget build(BuildContext context) {
-    final filteredRecommendations =
-        _selectedCategory == 'Todos'
-            ? _recommendations
-            : _recommendations
-                .where((r) => r.category == _selectedCategory)
-                .toList();
-
     return Scaffold(
-      appBar: AppBar(title: const Text('Recomendaciones locales')),
-      body: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(16),
-            child: CustomSearchBar(
-              hintText: 'Buscar recomendaciones...',
-              onChanged: (query) {
-                // Implementar búsqueda
-              },
-            ),
-          ),
-          SizedBox(
-            height: 50,
-            child: ListView(
-              scrollDirection: Axis.horizontal,
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              children: [
-                _buildCategoryChip('Todos'),
-                _buildCategoryChip('Restaurante'),
-                _buildCategoryChip('Hotel'),
-                _buildCategoryChip('Atracción'),
-                _buildCategoryChip('Transporte'),
-              ],
-            ),
-          ),
-          Expanded(
-            child: ListView.builder(
-              padding: const EdgeInsets.all(16),
-              itemCount: filteredRecommendations.length,
-              itemBuilder: (context, index) {
-                final recommendation = filteredRecommendations[index];
-                return _buildRecommendationCard(recommendation);
-              },
-            ),
-          ),
-        ],
+      appBar: AppBar(
+        title: const Text('Recomendaciones locales'),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () => Navigator.pop(context),
+        ),
+      ),
+      body: FutureBuilder<List<Recommendation>>(
+        future: _recommendationsFuture,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return Center(child: Text('Error: ${snapshot.error}'));
+          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+            return const Center(child: Text('No hay recomendaciones disponibles'));
+          }
+
+          final recommendations = snapshot.data!;
+          final filteredRecommendations = _selectedCategory == 'Todos'
+              ? recommendations
+              : recommendations.where((r) => r.category == _selectedCategory).toList();
+
+          return Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(16),
+                child: CustomSearchBar(
+                  hintText: 'Buscar recomendaciones...',
+                  onChanged: (query) {
+                    // Implementar búsqueda
+                  },
+                ),
+              ),
+              SizedBox(
+                height: 50,
+                child: ListView(
+                  scrollDirection: Axis.horizontal,
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  children: [
+                    _buildCategoryChip('Todos'),
+                    _buildCategoryChip('Restaurante'),
+                    _buildCategoryChip('Hotel'),
+                    _buildCategoryChip('Atracción'),
+                    _buildCategoryChip('Transporte'),
+                  ],
+                ),
+              ),
+              Expanded(
+                child: ListView.builder(
+                  padding: const EdgeInsets.all(16),
+                  itemCount: filteredRecommendations.length,
+                  itemBuilder: (context, index) {
+                    final recommendation = filteredRecommendations[index];
+                    return _buildRecommendationCard(recommendation);
+                  },
+                ),
+              ),
+            ],
+          );
+        },
       ),
     );
   }
@@ -128,13 +142,14 @@ class _LocalRecommendationsScreenState
                       width: 80,
                       height: 80,
                       color: AppColors.grey200,
-                      child:
-                          recommendation.imageUrls.isNotEmpty
-                              ? Image.network(
-                                recommendation.imageUrls.first,
-                                fit: BoxFit.cover,
-                              )
-                              : const Icon(Icons.image),
+                      child: recommendation.imageUrls.isNotEmpty
+                          ? Image.network(
+                              recommendation.imageUrls.first,
+                              fit: BoxFit.cover,
+                              errorBuilder: (context, error, stackTrace) =>
+                                  const Icon(Icons.image),
+                            )
+                          : const Icon(Icons.image),
                     ),
                   ),
                   const SizedBox(width: 12),
@@ -263,10 +278,7 @@ class _LocalRecommendationsScreenState
                     itemBuilder: (context, index) {
                       return Padding(
                         padding: EdgeInsets.only(
-                          right:
-                              index < recommendation.imageUrls.length - 1
-                                  ? 8
-                                  : 0,
+                          right: index < recommendation.imageUrls.length - 1 ? 8 : 0,
                         ),
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(8),
@@ -274,6 +286,8 @@ class _LocalRecommendationsScreenState
                             recommendation.imageUrls[index],
                             width: 300,
                             fit: BoxFit.cover,
+                            errorBuilder: (context, error, stackTrace) =>
+                                const Icon(Icons.broken_image),
                           ),
                         ),
                       );

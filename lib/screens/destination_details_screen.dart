@@ -266,7 +266,13 @@ class _DestinationDetailsScreenState extends State<DestinationDetailsScreen> {
                   'Recomendaciones locales',
                   style: TextStyle(fontSize: 14),
                 ),
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.pushNamed(
+                    context,
+                    '/local-recommendations',
+                    arguments: widget.destination.id,
+                  );
+                },
                 style: OutlinedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 14),
                   side: BorderSide(color: Colors.grey.shade300),
@@ -284,7 +290,11 @@ class _DestinationDetailsScreenState extends State<DestinationDetailsScreen> {
                 icon: const Icon(Icons.flag, size: 20),
                 label: const Text('Visitar', style: TextStyle(fontSize: 14)),
                 onPressed: () {
-                  // Agregar a un viaje
+                  Navigator.pushNamed(
+                    context,
+                    '/plan-trip',
+                    arguments: widget.destination.id,
+                  );
                 },
                 style: ElevatedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 14),

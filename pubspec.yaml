@@ -67,6 +67,7 @@ flutter:
       - assets\data\destinations.json
       - assets\data\trips.json
       - assets\data\journals.json
+      - assets\data\recommendations.json
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
