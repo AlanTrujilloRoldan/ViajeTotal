@@ -10,6 +10,7 @@ import 'package:viajetotal/screens/reviews_ratings_screen.dart';
 import 'package:viajetotal/screens/local_recommendations_screen.dart';
 import 'package:viajetotal/screens/journal_new_screen.dart';
 import 'package:viajetotal/screens/journal_edit_screen.dart';
+import 'package:viajetotal/screens/profile_screen.dart';
 import 'package:viajetotal/theme/app_theme.dart';
 import 'package:viajetotal/models/destination.dart';
 import 'package:viajetotal/models/trip.dart';
@@ -40,6 +41,7 @@ class ViajeTotalApp extends StatelessWidget {
         '/': (context) => const HomeScreen(),
         '/search': (context) => const SearchScreen(),
         '/trips': (context) => const TripsScreen(),
+        '/profile': (context) => const ProfileScreen(),
         '/destination': (context) {
           final destination =
               ModalRoute.of(context)!.settings.arguments as Destination;

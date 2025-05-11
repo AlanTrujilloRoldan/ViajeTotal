@@ -236,6 +236,9 @@ class _TripsScreenState extends State<TripsScreen> {
           case 2:
             Navigator.pushNamed(context, '/trips');
             break;
+          case 3:
+            Navigator.pushNamed(context, '/profile');
+            break;
         }
       },
     );
